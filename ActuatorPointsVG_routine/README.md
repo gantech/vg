@@ -1,0 +1,1 @@
+This directory contains the python routine to create .yaml files for nalu to use as actuator points representing a VG, following the actuator line method. Currently, the python routine featured here uses the parameters for the flat plate case.
