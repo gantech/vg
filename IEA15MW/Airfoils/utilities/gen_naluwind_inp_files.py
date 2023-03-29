@@ -183,7 +183,7 @@ def gen_static_cases(aoa_range = np.linspace(-10,25,36), rey=[10e6]):
             # Path(xfoil_dir).mkdir(parents=True, exist_ok=True)
             # write_xfoil_input_file(xfoil_dir, af, re)
             for aoa in aoa_range:
-                gen_static_case_vg(af, 'nalu_inputs/grids/{}.exo'.format(af), aoa, re)
+                gen_static_case_vg(af, 'nalu_inputs/grids/{}_3d.exo'.format(af), aoa, re)
 
     # with open('xfoil_runs/run_xfoil.sh','w') as f:
     #     f.write('/projects/integrate/ganeshv/Xfoil/bin/xfoil < $1 \n')
