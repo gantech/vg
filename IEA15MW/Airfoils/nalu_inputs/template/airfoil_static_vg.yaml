@@ -84,7 +84,7 @@ realms:
 
     initial_conditions:
       - constant: ic_1
-        target_name: [Flow-QUAD]
+        target_name: [Flow-HEX]
         value:
           pressure: 0
           velocity: [15.0, 0.0]
@@ -92,7 +92,7 @@ realms:
           specific_dissipation_rate: 2266.4
 
     material_properties:
-      target_name: [Flow-QUAD]
+      target_name: [Flow-HEX]
       specifications:
         - name: density
           type: constant
@@ -125,6 +125,14 @@ realms:
         pressure: 0.0
         turbulent_ke: 0.095118
         specific_dissipation_rate: 2266.4
+
+    - symmetry_boundary_condition: bc_front
+      target_name: front
+      symmetry_user_data:
+
+    - symmetry_boundary_condition: bc_back
+      target_name: back
+      symmetry_user_data:
 
     solution_options:
       name: myOptions
@@ -168,13 +176,10 @@ realms:
             turbulent_ke: 0.7
             specific_dissipation_rate: 0.7
 
-        - turbulence_model_constants:
-            betaStar: 0.11            
-
     #Use this to set the mean angle of attack
     mesh_transformation:
       - name: interior
-        mesh_parts: [ Flow-QUAD ]
+        mesh_parts: [ Flow-HEX ]
         motion:
          - type: rotation
            angle: 10.0
@@ -187,7 +192,7 @@ realms:
       physics: surface_force_and_moment
       output_file_name: results/forces.dat
       frequency: 1
-      parameters: [0.25, 0]
+      parameters: [0.25, 0, 0]
       target_name: airfoil
 
     output:
