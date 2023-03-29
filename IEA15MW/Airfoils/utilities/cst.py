@@ -52,8 +52,11 @@ class CST2D:
         K = self.kvals
         N = self.order
         xco = np.asarray(xinp)
-
-        stmp = np.empty((N+1, xco.shape[0]))
+        try:
+            xco_shape = xco.shape[0]
+        except:
+            xco_shape = 1
+        stmp = np.empty((N+1, xco_shape))
         for i in range(N + 1):
             stmp[i, :] = K[i] * np.power(xco, i) * np.power((1.0 - xco), (N-i))
         return stmp
@@ -303,5 +306,5 @@ class AirfoilShape:
             tuple: (xco, ylo, yup) Dimensional (lower, upper) y-coordinates
         """
         afcst = self.cst()
-        (ylo, yup) = afcst(xinp)
+        (ylo, yup) = afcst(xinp, te_lower=self.te_lower, te_upper=self.te_upper )
         return (xinp * self.chord, ylo * self.chord, yup * self.chord)
