@@ -121,7 +121,7 @@ def gen_static_case_vg(af_name, mesh_file, aoa, rey,
     nvec = np.cross( tvec, np.array([0,0,-1]))
     nvec = nvec/np.linalg.norm(nvec)
 
-    x_vg = np.array([vg_loc, float(af_shape(vg_loc)[2]), 0.5*delta2])
+    x_vg = np.array([vg_loc, float(af_shape(vg_loc)[2])+0.15*height, 0.5*delta2])
     rot_vec = Rotation.from_rotvec(np.radians(aoa) * np.array([0, 0, -1]))
     x_vg_rot = rot_vec.apply(x_vg-np.array([0.25,0.0,0.0])) + np.array([0.25,0.0,0.0])
     nvec_rot = rot_vec.apply(nvec)
