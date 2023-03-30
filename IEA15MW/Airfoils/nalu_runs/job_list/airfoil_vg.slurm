@@ -25,8 +25,11 @@ echo "Num. MPI Ranks = $mpi_ranks"
 echo "Num. threads   = $OMP_NUM_THREADS"
 echo "Working dir    = $PWD"
 
+echo "task_id        = ${SLURM_ARRAY_TASK_ID}"
+
 
 
 case=$(sed -n "${SLURM_ARRAY_TASK_ID}p" listOfCases)
 cd $case
+echo "case path      = $case"
 srun -n ${mpi_ranks} ${nalu_exec} -i *static_aoa*.yaml -o log.inpfile
