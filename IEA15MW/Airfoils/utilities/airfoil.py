@@ -246,6 +246,35 @@ class AirfoilTable:
         """Return interpolated cm values at desired angles of attack"""
         return self(aoa, "cm")
 
+    def write_openfast_polar(self, filename):
+        """Write OpenFAST polar file"""
+        with open(filename, 'w') as f:            
+            f.write('! ------------ AirfoilInfo v1.01.x Input File ----------------------------------\n')
+            f.write('! AeroElasticSE FAST driver\n')
+            f.write('! line\n')
+            f.write('! line\n')
+            f.write('! ------------------------------------------------------------------------------\n')
+            f.write('DEFAULT                  InterpOrd   ! Interpolation order to use for quasi-steady table lookup {1=linear; 3=cubic spline; "default"} [default=3]\n')
+            f.write('1                        NonDimArea  ! The non-dimensional area of the airfoil (area/chord^2) (set to 1.0 if unsure or unneeded)\n')
+            f.write('0                            NumCoords   ! The number of coordinates in the airfoil shape file. Set to zero if coordinates not included.\n')
+            f.write('AF00_BL.txt              BL_file     ! The file name including the boundary layer characteristics of the profile. Ignored if the aeroacoustic module is not called.\n')
+            f.write('1                        NumTabs     ! Number of airfoil tables in this file.  Each table must have lines for Re and Ctrl.\n')
+            f.write('! ------------------------------------------------------------------------------\n')
+            f.write('! data for table 1 \n')
+            f.write('! ------------------------------------------------------------------------------\n')
+            f.write('10.000000                 Re          ! Reynolds number in millions\n')
+            f.write('0                        Ctrl        ! Control setting (must be 0 for current AirfoilInfo)\n')
+            f.write('False                     InclUAdata  ! Is unsteady aerodynamics data included in this table? If TRUE, then include 30 UA coefficients below this line            \n')
+            f.write('!........................................\n')
+            f.write('! Table of aerodynamics coefficients\n')
+            f.write('{}                      NumAlf      ! Number of data lines in the following table\n'.format(self.data.shape[0]))
+            f.write('!    Alpha      Cl      Cd        Cm\n')
+            f.write('!    (deg)      (-)     (-)       (-)\n')
+            data = self.data
+            for i,l in data.iterrows():
+                f.write('{} {} {} {} \n'.format(l['aoa'], l['cl'], l['cd'], l['cm']))
+            
+
 class AirfoilShape:
     """Representation of airfoil point data"""
 
