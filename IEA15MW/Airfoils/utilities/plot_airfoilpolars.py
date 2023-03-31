@@ -7,6 +7,7 @@ import glob, pathlib
 from airfoil import *
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.interpolate import UnivariateSpline
 
 def plot_airfoil_polar(afp_yaml1, filename, afp_yaml2=None, afp_yaml3=None):
 
@@ -35,12 +36,38 @@ def plot_airfoil_polar(afp_yaml1, filename, afp_yaml2=None, afp_yaml3=None):
             if (afp_yaml2 is not None):
                 af_data = afp2.get_airfoil_data(af)
                 axs[0].plot(af_data['aoa'], af_data['cl'],label=r'Nalu-wind VG')
+                if ('SNL' in af):
+                    spl_cl = UnivariateSpline(af_data['aoa'], af_data['cl'], s=3.0, k=3)
+                else:
+                    spl_cl = UnivariateSpline(af_data['aoa'], af_data['cl'], s=0.1, k=3)
+                axs[0].plot(af_data['aoa'], spl_cl(af_data['aoa']),label=r'VG Smooth')
                 stall_angle = afp.lift_stall_angle(af)
                 axs[0].plot(stall_angle, afp.get_aftable(af)(stall_angle,'cl'), '+', color='r')
                 axs[1].semilogy(af_data['aoa'], af_data['cd'],label=r'Nalu-wind VG')
+                if ('SNL' in af):
+                    spl_cd = UnivariateSpline(af_data['aoa'], np.log(af_data['cd']), s=3.0, k=3)
+                else:
+                    spl_cd = UnivariateSpline(af_data['aoa'], np.log(af_data['cd']), s=0.1, k=3)
+                axs[1].semilogy(af_data['aoa'], np.exp(spl_cd(af_data['aoa'])),label=r'VG Smooth')
                 #axs[1,0].plot(af_data['aoa'], af_data['cm'])
                 axs[2].plot(af_data['aoa'], af_data['cl']/af_data['cd'],label=r'Nalu-wind VG')
+                axs[2].plot(af_data['aoa'], spl_cl(af_data['aoa'])/np.exp(spl_cd(af_data['aoa'])),label=r'Nalu-wind VG')
                 axs[1].legend(loc=0)
+                if ('SNL' in af):
+                    spl_cm = UnivariateSpline(af_data['aoa'], af_data['cm'], s=3.0, k=3)
+                else:
+                    spl_cm = UnivariateSpline(af_data['aoa'], af_data['cm'], s=0.1, k=3)
+
+                smooth_af_data  = {
+                    af : {
+                        'aoa': af_data['aoa'].to_list(),
+                        'cl': spl_cl(af_data['aoa']).tolist(),
+                        'cd': np.exp(spl_cd(af_data['aoa'])).tolist(),
+                        'cm': spl_cm(af_data['aoa']).tolist()
+                        }
+                }
+                yaml.dump(smooth_af_data, open('nalu_results/static_vg/{}_smooth.yaml'.format(af),'w'))
+
 
             if (afp_yaml3 is not None):
                 af_data = afp3.get_airfoil_data(af)                
