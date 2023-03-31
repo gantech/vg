@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
@@ -32,12 +34,12 @@ def plot_airfoil_polar(afp_yaml1, filename, afp_yaml2=None, afp_yaml3=None):
             
             if (afp_yaml2 is not None):
                 af_data = afp2.get_airfoil_data(af)
-                axs[0].plot(af_data['aoa'], af_data['cl'],label=r'Xfoil')
+                axs[0].plot(af_data['aoa'], af_data['cl'],label=r'Nalu-wind VG')
                 stall_angle = afp.lift_stall_angle(af)
                 axs[0].plot(stall_angle, afp.get_aftable(af)(stall_angle,'cl'), '+', color='r')
-                axs[1].semilogy(af_data['aoa'], af_data['cd'],label=r'Xfoil')
+                axs[1].semilogy(af_data['aoa'], af_data['cd'],label=r'Nalu-wind VG')
                 #axs[1,0].plot(af_data['aoa'], af_data['cm'])
-                axs[2].plot(af_data['aoa'], af_data['cl']/af_data['cd'],label=r'Xfoil')
+                axs[2].plot(af_data['aoa'], af_data['cl']/af_data['cd'],label=r'Nalu-wind VG')
                 axs[1].legend(loc=0)
 
             if (afp_yaml3 is not None):
@@ -105,6 +107,6 @@ def plot_re_airfoil_polars(rey=[5e6,10e6,15e6]):
 
 if __name__=="__main__":
     #plot_re_airfoil_polars()
-    plot_airfoil_polar('nalu_results/static/airfoils_rey05000000.yaml','nalu_results/airfols_rey05000000.pdf', 'xfoil_results/airfoils_rey05000000.yaml', None)
-    plot_airfoil_polar('nalu_results/static/airfoils_rey10000000.yaml','nalu_results/airfols_rey10000000.pdf', 'xfoil_results/airfoils_rey10000000.yaml', 'yaml_data/IEA15MW_polars.yaml')    
-    plot_airfoil_polar('nalu_results/static/airfoils_rey15000000.yaml','nalu_results/airfols_rey15000000.pdf', 'xfoil_results/airfoils_rey15000000.yaml', None)
+    #plot_airfoil_polar('nalu_results/static/airfoils_rey05000000.yaml','nalu_results/airfols_rey05000000.pdf', 'nalu_results/static_vg/airfoils_rey05000000.yaml', None)
+    plot_airfoil_polar('nalu_results/static/airfoils_rey10000000.yaml','nalu_results/airfols_rey10000000.pdf', 'nalu_results/static_vg/airfoils_rey10000000.yaml', None)
+    #plot_airfoil_polar('nalu_results/static/airfoils_rey15000000.yaml','nalu_results/airfols_rey15000000.pdf', 'nalu_results/static_vg/airfoils_rey15000000.yaml', None)
